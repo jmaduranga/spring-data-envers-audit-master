@@ -1,0 +1,70 @@
+server:
+  port: 9090
+spring:
+  h2:
+    console:
+      enabled: true
+  datasource:
+    url: jdbc:h2:mem:mytestdb
+    driver-class-name: org.h2.Driver
+    data-username: sa
+    password:
+  jpa:
+    hibernate:
+      ddl-auto: create
+    properties:
+      org:
+        hibernate:
+          envers:
+            store_data_at_delete: true
+            do_not_audit_optimistic_locking_field: false
+  kafka:
+    consumer:
+      bootstrap-servers: localhost:9092
+      group-id: testgroup-id
+      max-poll-records: 1
+      properties:
+        session:
+          timeout:
+            ms: 15000
+        max:
+          poll:
+            interval:
+              ms: 7000
+        heartbeat:
+          interval:
+            ms: 5000
+        spring:
+          json:
+            trusted:
+              packages: "*"
+      auto-offset-reset: earliest
+      key-deserializer: org.apache.kafka.common.serialization.StringDeserializer
+      value-deserializer: org.springframework.kafka.support.serializer.JsonDeserializer
+    producer:
+      bootstrap-servers: localhost:9092
+      key-serializer: org.apache.kafka.common.serialization.StringSerializer
+      value-serializer: org.springframework.kafka.support.serializer.JsonSerializer
+    listener:
+      ack-mode: manual
+      concurrency: 2
+  cache:
+    jcache:
+      config: classpath:ehcache.xml
+bucket4j:
+  enabled: true
+  filters:
+    - cache-name: buckets
+      http-response-body: { "message": "Too many requests, pls try later" }
+      url: /api/.*
+      rate-limits:
+        - bandwidths:
+            - capacity: 1
+              time: 1
+              unit: minutes
+testmodule:
+  kafka:
+    topic: progresstopic
+
+log:
+  directory: C:/SoftwareDevelopment/EPLAS/applicationlogs

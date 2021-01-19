@@ -1,0 +1,5 @@
+{
+  "Component name": "@project.artifactId@",
+  "Component version": "@project.version@",
+  "Build timestamp": "@timestamp@",
+}
